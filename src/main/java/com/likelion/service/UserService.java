@@ -2,11 +2,12 @@ package com.likelion.service;
 
 import com.likelion.domain.repository.UserRepository;
 import com.likelion.dto.user.UserJoinRequestDto;
+import com.likelion.dto.user.UserUpdateDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Transactional(readOnly = true)
+@Transactional
 @RequiredArgsConstructor
 @Service
 public class UserService {
@@ -15,5 +16,9 @@ public class UserService {
 
     public Long save(UserJoinRequestDto requestDto) {
         return userRepository.save(requestDto.toEntity()).getId();
+    }
+
+    public Long update(UserUpdateDto requestDto) {
+        return null;
     }
 }
