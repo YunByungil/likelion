@@ -29,8 +29,7 @@ dependencies {
 	runtimeOnly 'com.h2database:h2'
 //	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.security:spring-security-test'
+
 
 	// ⭐ Spring boot 3.x이상에서 QueryDsl 패키지를 정의하는 방법
 	implementation 'com.querydsl:querydsl-core:5.0.0'
@@ -39,6 +38,12 @@ dependencies {
 	annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
 	annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
 	annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.security:spring-security-test'
+	testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
+	testImplementation 'org.junit.vintage:junit-vintage-engine:5.9.2'
+
 }
 
 jar {
@@ -50,5 +55,66 @@ tasks.named('test') {
 }
 
 jacoco {
-	toolVersion = "0.8.7"
+	toolVersion = "0.8.10"
+}
+
+test {
+	useJUnitPlatform()
+	finalizedBy 'jacocoTestReport'
+
+	jacoco {
+		excludes += ["com/likelion/LikelionApplication.class"]
+	}
+}
+
+jacocoTestReport { // html, csv 형태로 report 제공
+	dependsOn test
+
+	reports {
+		html.enabled true
+		xml.enabled true
+		csv.enabled false
+	}
+
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: [
+					"com/likelion/LikelionApplication.class"
+			])
+		}))
+	}
+
+	finalizedBy 'jacocoTestCoverageVerification'
+}
+
+jacocoTestCoverageVerification {
+	violationRules {
+		rule { // 1번 규칙
+			enabled = true // 규칙 활성화여부
+			element = 'CLASS' // 적용 대상을 지정한다. 기본값은 BUNDLE (전체 패키지)
+
+//			limit {
+//				counter = 'BRANCH'
+//				value = 'COVEREDRATIO'
+//				minimum = 0.50
+//			}
+
+			// 라인 커버리지 최소한 80%
+			limit {
+				counter = 'LINE'
+				value = 'COVEREDRATIO'
+				minimum = 0.70
+			}
+
+			// 빈 줄을 제외한 코드의 라인수 최대 300라인
+			limit {
+				counter = 'LINE'
+				value = 'TOTALCOUNT'
+				maximum = 300
+			}
+
+			// 커버리지 체크를 제외할 클래스들
+			excludes = []
+		}
+	}
 }
