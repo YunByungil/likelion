@@ -5,6 +5,7 @@ import com.likelion.domain.entity.User;
 import com.likelion.domain.enums.UserRole;
 import com.likelion.domain.repository.UserRepository;
 import com.likelion.dto.user.UserJoinRequestDto;
+import com.likelion.dto.user.UserUpdateDto;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -21,6 +22,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -68,5 +70,41 @@ class UserApiControllerTest {
         List<User> all = userRepository.findAll();
         assertThat(all.get(0).getUserName()).isEqualTo(userName);
         assertThat(all.get(0).getPassword()).isEqualTo(password);
+    }
+
+    @DisplayName("회원 정보 수정_Mock")
+    @Test
+    void updateUserInfo() throws Exception {
+        // given
+        String userName = "bang12";
+        String password = "1234";
+        UserRole role = UserRole.USER;
+
+        UserJoinRequestDto requestDto = UserJoinRequestDto.builder()
+                .userName(userName)
+                .password(password)
+                .role(role)
+                .build();
+
+        User savedUser = userRepository.save(requestDto.toEntity());
+
+        Long id = savedUser.getId();
+        String changePassword = "test22";
+
+        UserUpdateDto updateDto = UserUpdateDto.builder()
+                .password(changePassword)
+                .build();
+
+        String url = "http://localhost:8080/api/v1/user/" + id;
+
+        // when
+        mvc.perform(put(url)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(updateDto)))
+                .andExpect(status().isOk());
+
+        // then
+        List<User> all = userRepository.findAll();
+        assertThat(all.get(0).getPassword()).isEqualTo(changePassword);
     }
 }
