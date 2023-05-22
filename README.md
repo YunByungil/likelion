@@ -18,3 +18,7 @@
 - [ ] 포스트 수정 (회원전용)
 - [ ] 포스트 삭제 (회원전용)
 - [ ] 포스트 상세보기  
+
+## 해결해야 될 문제들
+- [ ] UserApiControllerTest에서 updateUserInfo jacoco 테스트 실패
+- [ ] Q타입, DTO타입 jacoco에서 제외시키기.
