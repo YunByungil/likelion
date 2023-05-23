@@ -99,4 +99,29 @@ class PostApiControllerTest {
 
         // then
     }
+
+    @DisplayName("게시글 상세 조회")
+    @Test
+    void getPost() throws Exception {
+        // given
+        String title = "상세제목";
+        String content = "상세내용";
+
+        Post post = postRepository.save(Post.builder()
+                .title(title)
+                .content(content)
+                .build());
+
+        String url = "http://localhost:8080/api/v1/post/" + post.getId();
+
+        // when
+        mvc.perform(get(url).accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value(title))
+                .andExpect(jsonPath("$.content").value(content));
+
+        // then
+        List<Post> all = postRepository.findAll();
+        assertThat(all.get(0).getTitle()).isEqualTo(title);
+    }
 }
