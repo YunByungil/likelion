@@ -4,6 +4,7 @@ import com.likelion.domain.entity.Post;
 import com.likelion.domain.repository.PostRepository;
 import com.likelion.dto.post.PostResponseDto;
 import com.likelion.dto.post.PostSaveRequestDto;
+import com.likelion.dto.post.PostUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,5 +40,12 @@ public class PostService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
 
         postRepository.delete(post);
+    }
+
+    public void updatePost(Long id, PostUpdateRequestDto requestDto) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
+
+        post.update(requestDto.getTitle(), requestDto.getContent());
     }
 }
