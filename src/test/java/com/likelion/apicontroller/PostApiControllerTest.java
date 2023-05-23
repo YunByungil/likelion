@@ -22,8 +22,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -133,5 +132,29 @@ class PostApiControllerTest {
                 .andExpect(jsonPath("$.title").value(title));
 
 
+    }
+
+    @DisplayName("게시글 삭제")
+    @Test
+    void deletePost() throws Exception {
+        // given
+        String title = "제목1";
+        String content = "내용1";
+
+        Post post = postRepository.save(Post.builder()
+                .title(title)
+                .content(content)
+                .build());
+
+        String url = "http://localhost:8080/api/v1/post/" + post.getId();
+
+        // when
+        mvc.perform(delete(url))
+                .andExpect(status().isOk());
+
+        // then
+        List<Post> all = postRepository.findAll();
+
+        assertThat(all).isEmpty();
     }
 }
