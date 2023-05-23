@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.likelion.domain.entity.Post;
 import com.likelion.domain.repository.PostRepository;
 import com.likelion.dto.post.PostSaveRequestDto;
+import com.likelion.dto.post.PostUpdateRequestDto;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -156,5 +157,40 @@ class PostApiControllerTest {
         List<Post> all = postRepository.findAll();
 
         assertThat(all).isEmpty();
+    }
+
+    @DisplayName("게시글 수정")
+    @Test
+    void updatePost() throws Exception {
+        // given
+        String title = "제목";
+        String content = "내용";
+
+        Post post = postRepository.save(Post.builder()
+                .title(title)
+                .content(content)
+                .build());
+
+        String newTitle = "새로운 제목";
+        String newContent = "새로운 내용";
+
+        PostUpdateRequestDto requestDto = PostUpdateRequestDto.builder()
+                .title(newTitle)
+                .content(newContent)
+                .build();
+
+        String url = "http://localhost:8080/api/v1/post/" + post.getId();
+
+        // when
+        mvc.perform(put(url)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(requestDto)))
+                .andExpect(status().isOk());
+
+        // then
+        List<Post> all = postRepository.findAll();
+
+        assertThat(all.get(0).getTitle()).isEqualTo(newTitle);
+        assertThat(all.get(0).getContent()).isEqualTo(newContent);
     }
 }
