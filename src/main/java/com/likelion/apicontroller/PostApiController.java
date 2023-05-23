@@ -7,10 +7,7 @@ import com.likelion.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,6 +32,13 @@ public class PostApiController {
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok().body(postList);
+    }
+
+    @GetMapping("/api/v1/post/{id}")
+    public ResponseEntity<PostResponseDto> getPost(@PathVariable Long id) {
+        PostResponseDto responseDto = postService.findById(id);
+
+        return ResponseEntity.ok().body(responseDto);
     }
 
 }
