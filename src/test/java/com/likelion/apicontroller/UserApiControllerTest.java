@@ -6,7 +6,9 @@ import com.likelion.domain.enums.UserRole;
 import com.likelion.domain.repository.UserRepository;
 import com.likelion.dto.user.UserJoinRequestDto;
 import com.likelion.dto.user.UserUpdateDto;
+import jakarta.persistence.EntityManager;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
@@ -41,6 +44,11 @@ class UserApiControllerTest {
         mvc = MockMvcBuilders
                 .webAppContextSetup(context)
                 .build();
+    }
+
+    @AfterEach
+    public void end() {
+        userRepository.deleteAll();
     }
 
     @DisplayName("회원가입 완료_Mock")
@@ -105,6 +113,7 @@ class UserApiControllerTest {
 
         // then
         List<User> all = userRepository.findAll();
-        assertThat(all.get(0).getPassword()).isEqualTo(changePassword);
+//        assertThat(all.get(0).getPassword()).isEqualTo(changePassword);
+        assertThat(changePassword).isEqualTo(all.get(0).getPassword());
     }
 }
