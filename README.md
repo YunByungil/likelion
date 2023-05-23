@@ -20,5 +20,5 @@
 - [ ] 포스트 상세보기  
 
 ## 해결해야 될 문제들
-- [ ] UserApiControllerTest에서 updateUserInfo jacoco 테스트 실패
-- [ ] Q타입, DTO타입 jacoco에서 제외시키기.
+- [x] UserApiControllerTest에서 updateUserInfo jacoco 테스트 실패
+- [x] Q타입, DTO타입 jacoco에서 제외시키기.
