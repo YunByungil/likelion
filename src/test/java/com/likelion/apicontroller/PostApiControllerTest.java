@@ -21,7 +21,9 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -40,6 +42,7 @@ class PostApiControllerTest {
         mvc = MockMvcBuilders
                 .webAppContextSetup(context)
                 .build();
+        postRepository.deleteAll();
     }
 
     @AfterEach
@@ -72,6 +75,28 @@ class PostApiControllerTest {
         List<Post> all = postRepository.findAll();
         assertThat(all.get(0).getTitle()).isEqualTo(title);
         assertThat(all.get(0).getContent()).isEqualTo(content);
+    }
 
+    @DisplayName("게시글 목록 조회 성공")
+    @Test
+    void getAllPost() throws Exception {
+        // given
+        String title = "제목임";
+        String content = "내용임";
+        String url = "http://localhost:8080/api/v1/post";
+
+        postRepository.save(Post.builder()
+                .title(title)
+                .content(content)
+                .build());
+
+        // when
+        mvc.perform(get(url)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].content").value(content))
+                .andExpect(jsonPath("$[0].title").value(title));
+
+        // then
     }
 }
