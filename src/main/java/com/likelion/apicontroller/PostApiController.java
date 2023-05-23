@@ -3,6 +3,7 @@ package com.likelion.apicontroller;
 import com.likelion.domain.entity.Post;
 import com.likelion.dto.post.PostResponseDto;
 import com.likelion.dto.post.PostSaveRequestDto;
+import com.likelion.dto.post.PostUpdateRequestDto;
 import com.likelion.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -44,6 +45,14 @@ public class PostApiController {
     @DeleteMapping("/api/v1/post/{id}")
     public ResponseEntity<Void> deletePost(@PathVariable Long id) {
         postService.deletePost(id);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/api/v1/post/{id}")
+    public ResponseEntity<Void> updatePost(@PathVariable Long id,
+                                           @RequestBody PostUpdateRequestDto requestDto) {
+        postService.updatePost(id, requestDto);
 
         return ResponseEntity.ok().build();
     }
