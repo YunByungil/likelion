@@ -3,6 +3,7 @@ package com.likelion.service;
 import com.likelion.domain.entity.Post;
 import com.likelion.domain.repository.PostRepository;
 import com.likelion.dto.post.PostSaveRequestDto;
+import com.likelion.dto.post.PostUpdateRequestDto;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -80,5 +81,34 @@ class PostServiceTest {
 
         // then
         assertThat(all.size()).isEqualTo(0);
+    }
+
+    @DisplayName("게시글 수정 테스트")
+    @Test
+    void updatePost() {
+        // given
+        String title = "게시글";
+        String content = "내용";
+
+        Post post = postService.save(PostSaveRequestDto.builder()
+                .title(title)
+                .content(content)
+                .build());
+
+        String changeTitle = "게시글수정";
+        String changeContent = "내용수정";
+        PostUpdateRequestDto requestDto = PostUpdateRequestDto.builder()
+                .title(changeTitle)
+                .content(changeContent)
+                .build();
+
+        // when
+        postService.updatePost(post.getId(), requestDto);
+
+        // then
+        List<Post> all = postService.findAll();
+        assertThat(all.get(0).getTitle()).isEqualTo(changeTitle);
+        assertThat(all.get(0).getContent()).isEqualTo(changeContent);
+
     }
 }
