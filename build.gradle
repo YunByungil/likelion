@@ -81,7 +81,7 @@ test {
 	finalizedBy 'jacocoTestReport'
 
 	jacoco {
-		excludes += ["com/likelion/LikelionApplication.class"]
+		excludes += ["com/likelion/LikelionApplication.class","com/likelion/domain/entity/Q*.*"]
 	}
 }
 
@@ -94,11 +94,17 @@ jacocoTestReport { // html, csv 형태로 report 제공
 		csv.enabled false
 	}
 
+	def Qdomains = []
+	for (qPattern in '*.QA'..'*.QZ') { // qPattern = '*.QA', '*.QB', ... '*.QZ'
+		Qdomains.add(qPattern + '*')
+	}
+
 	afterEvaluate {
 		classDirectories.setFrom(files(classDirectories.files.collect {
 			fileTree(dir: it, exclude: [
-					"com/likelion/LikelionApplication.class"
-			])
+					"com/likelion/LikelionApplication.class",
+					"com/likelion/domain/entity/Q*.*"
+			] + Qdomains)
 		}))
 	}
 
@@ -106,6 +112,10 @@ jacocoTestReport { // html, csv 형태로 report 제공
 }
 
 jacocoTestCoverageVerification {
+	def Qdomains = []
+	for (qPattern in '*.QA'..'*.QZ') { // qPattern = '*.QA', '*.QB', ... '*.QZ'
+		Qdomains.add(qPattern + '*')
+	}
 	violationRules {
 		rule { // 1번 규칙
 			enabled = true // 규칙 활성화여부
@@ -132,7 +142,7 @@ jacocoTestCoverageVerification {
 			}
 
 			// 커버리지 체크를 제외할 클래스들
-			excludes = []
+			excludes = [] + Qdomains
 		}
 	}
 }
