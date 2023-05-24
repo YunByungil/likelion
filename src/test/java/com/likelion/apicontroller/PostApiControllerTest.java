@@ -31,8 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -108,17 +107,26 @@ class PostApiControllerTest {
         String content = "내용임";
         String url = "http://localhost:8080/api/v1/post";
 
-        postRepository.save(Post.builder()
-                .title(title)
-                .content(content)
-                .build());
+        for (int i = 0; i < 5; i++) {
+            postRepository.save(Post.builder()
+                    .title(title + i)
+                    .content(content + i)
+                    .build());
+        }
 
         // when
         mvc.perform(get(url)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].content").value(content))
-                .andExpect(jsonPath("$[0].title").value(title));
+                .andExpect(jsonPath("$[0].content").value(content + 0))
+                .andExpect(jsonPath("$[0].title").value(title + 0))
+                .andDo(document("/post-get-all",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        responseFields(
+                                fieldWithPath("[].title").description("Post 제목"),
+                                fieldWithPath("[].content").description("Post 내용")
+                        )));
 
         // then
     }
