@@ -6,7 +6,7 @@
 [[resources-post]]
 == Post
 
-[[resources-post-create]]
+[[resources-post]]
 === Post 생성
 
 ==== HTTP request
@@ -16,3 +16,14 @@ include::{snippets}/post/http-request.adoc[]
 ==== HTTP response
 
 include::{snippets}/post/http-response.adoc[]
+
+[[resources-post-create]]
+=== Post 목록 조회
+
+==== HTTP request
+
+include::{snippets}/post-get-all/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/post-get-all/http-response.adoc[]
