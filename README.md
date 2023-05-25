@@ -32,4 +32,4 @@
 ## 해결해야 될 문제들
 - [x] UserApiControllerTest에서 updateUserInfo jacoco 테스트 실패
 - [x] Q타입, DTO타입 jacoco에서 제외시키기.
-- [ ] Spring Rest Docs 적용
+- [x] Spring Rest Docs 적용
