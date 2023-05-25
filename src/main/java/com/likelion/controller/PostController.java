@@ -21,10 +21,7 @@ public class PostController {
 
     @GetMapping("/post")
     public String getPostList(Model model) {
-        List<Post> all = postService.findAll();
-        List<PostListResponseDto> postList = all.stream()
-                .map(PostListResponseDto::new)
-                .collect(Collectors.toList());
+        List<PostListResponseDto> postList = postService.findAll();
 
         model.addAttribute("postList", postList);
         return "postList";

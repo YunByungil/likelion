@@ -1,6 +1,7 @@
 package com.likelion.apicontroller;
 
 import com.likelion.domain.entity.Post;
+import com.likelion.dto.post.PostListResponseDto;
 import com.likelion.dto.post.PostResponseDto;
 import com.likelion.dto.post.PostSaveRequestDto;
 import com.likelion.dto.post.PostUpdateRequestDto;
@@ -27,10 +28,8 @@ public class PostApiController {
     }
 
     @GetMapping("/api/v1/post")
-    public ResponseEntity<List<PostResponseDto>> getAllPost() {
-        List<PostResponseDto> postList = postService.findAll().stream()
-                .map(PostResponseDto::new)
-                .collect(Collectors.toList());
+    public ResponseEntity<List<PostListResponseDto>> getAllPost() {
+        List<PostListResponseDto> postList = postService.findAll();
 
         return ResponseEntity.ok().body(postList);
     }

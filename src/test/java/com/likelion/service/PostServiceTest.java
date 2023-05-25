@@ -2,6 +2,7 @@ package com.likelion.service;
 
 import com.likelion.domain.entity.Post;
 import com.likelion.domain.repository.PostRepository;
+import com.likelion.dto.post.PostListResponseDto;
 import com.likelion.dto.post.PostSaveRequestDto;
 import com.likelion.dto.post.PostUpdateRequestDto;
 import org.assertj.core.api.Assertions;
@@ -52,7 +53,7 @@ class PostServiceTest {
 
 
         // when
-        List<Post> all = postService.findAll();
+        List<PostListResponseDto> all = postService.findAll();
 
         // then
         assertThat(all.size()).isEqualTo(5);
@@ -106,7 +107,7 @@ class PostServiceTest {
         postService.updatePost(post.getId(), requestDto);
 
         // then
-        List<Post> all = postService.findAll();
+        List<PostListResponseDto> all = postService.findAll();
         assertThat(all.get(0).getTitle()).isEqualTo(changeTitle);
         assertThat(all.get(0).getContent()).isEqualTo(changeContent);
 

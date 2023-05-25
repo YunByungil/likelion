@@ -2,6 +2,7 @@ package com.likelion.service;
 
 import com.likelion.domain.entity.Post;
 import com.likelion.domain.repository.PostRepository;
+import com.likelion.dto.post.PostListResponseDto;
 import com.likelion.dto.post.PostResponseDto;
 import com.likelion.dto.post.PostSaveRequestDto;
 import com.likelion.dto.post.PostUpdateRequestDto;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -23,8 +25,10 @@ public class PostService {
     }
 
     // TODO: List<PostResponseDto>로 수정
-    public List<Post> findAll() {
-        return postRepository.findAll();
+    public List<PostListResponseDto> findAll() {
+        return postRepository.findAll().stream()
+                .map(PostListResponseDto::new)
+                .collect(Collectors.toList());
     }
 
     // TODO: PostListResponse, PostResponse 두 개 나누기

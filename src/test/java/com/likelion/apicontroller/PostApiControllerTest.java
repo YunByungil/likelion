@@ -131,7 +131,7 @@ class PostApiControllerTest {
                                 fieldWithPath("[].id").description("Post 번호"),
                                 fieldWithPath("[].title").description("Post 제목"),
                                 fieldWithPath("[].content").description("Post 내용"),
-                                fieldWithPath("[].createAt").description("Post 작성일")
+                                fieldWithPath("[].createdAt").description("Post 작성일")
                         )));
 
         // then
