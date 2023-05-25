@@ -24,6 +24,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
@@ -113,19 +114,24 @@ class PostApiControllerTest {
                     .content(content + i)
                     .build());
         }
+        Post post = postRepository.findById(1L).get();
 
         // when
         mvc.perform(get(url)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(1))//
                 .andExpect(jsonPath("$[0].content").value(content + 0))
                 .andExpect(jsonPath("$[0].title").value(title + 0))
+//                .andExpect(jsonPath("$[0].createAt").value(post.getCreatedAt()))
                 .andDo(document("/post-get-all",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         responseFields(
+                                fieldWithPath("[].id").description("Post 번호"),
                                 fieldWithPath("[].title").description("Post 제목"),
-                                fieldWithPath("[].content").description("Post 내용")
+                                fieldWithPath("[].content").description("Post 내용"),
+                                fieldWithPath("[].createAt").description("Post 작성일")
                         )));
 
         // then
