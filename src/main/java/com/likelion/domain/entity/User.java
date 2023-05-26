@@ -25,15 +25,15 @@ public class User extends BaseTimeEntity implements UserDetails {
     private Long id;
 
 
-    private String userName;
+    private String username;
 
     private String password;
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
     @Builder
-    public User(String userName, String password, UserRole role) {
-        this.userName = userName;
+    public User(String username, String password, UserRole role) {
+        this.username = username;
         this.password = password;
         this.role = role;
     }
@@ -52,7 +52,7 @@ public class User extends BaseTimeEntity implements UserDetails {
 
     @Override // 사용자 id를 반환
     public String getUsername() {
-        return userName;
+        return username;
     }
 
     @Override // 패스워드 반환
