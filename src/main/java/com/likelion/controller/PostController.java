@@ -4,6 +4,7 @@ import com.likelion.domain.entity.Post;
 import com.likelion.dto.post.PostListResponseDto;
 import com.likelion.dto.post.PostResponseDto;
 import com.likelion.service.PostService;
+import lombok.Generated;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Generated
 @Controller
 @RequiredArgsConstructor
 public class PostController {

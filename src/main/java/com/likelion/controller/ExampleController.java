@@ -1,5 +1,6 @@
 package com.likelion.controller;
 
+import lombok.Generated;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Controller;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Generated
 @Controller
 public class ExampleController {
 
@@ -28,6 +30,7 @@ public class ExampleController {
 
     @Getter
     @Setter
+    @Generated
     class Person {
         private Long id;
         private String name;
