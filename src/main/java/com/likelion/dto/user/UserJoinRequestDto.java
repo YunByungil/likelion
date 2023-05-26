@@ -11,20 +11,20 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserJoinRequestDto {
 
-    private String userName;
+    private String username;
     private String password;
     private UserRole role;
 
     @Builder
-    public UserJoinRequestDto(String userName, String password, UserRole role) {
-        this.userName = userName;
+    public UserJoinRequestDto(String username, String password, UserRole role) {
+        this.username = username;
         this.password = password;
         this.role = UserRole.USER;
     }
 
     public User toEntity() {
         return User.builder()
-                .userName(userName)
+                .username(username)
                 .password(password)
                 .role(UserRole.USER)
                 .build();

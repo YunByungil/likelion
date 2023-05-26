@@ -55,12 +55,12 @@ class UserApiControllerTest {
     @Test
     void join() throws Exception {
         // given
-        String userName = "bang12";
+        String username = "bang12";
         String password = "1234";
         UserRole role = UserRole.USER;
 
         UserJoinRequestDto requestDto = UserJoinRequestDto.builder()
-                .userName(userName)
+                .username(username)
                 .password(password)
                 .role(role)
                 .build();
@@ -76,7 +76,7 @@ class UserApiControllerTest {
 
         // then
         List<User> all = userRepository.findAll();
-        assertThat(all.get(0).getUsername()).isEqualTo(userName);
+        assertThat(all.get(0).getUsername()).isEqualTo(username);
         assertThat(all.get(0).getPassword()).isEqualTo(password);
     }
 
@@ -84,12 +84,12 @@ class UserApiControllerTest {
     @Test
     void updateUserInfo() throws Exception {
         // given
-        String userName = "bang12";
+        String username = "bang12";
         String password = "1234";
         UserRole role = UserRole.USER;
 
         UserJoinRequestDto requestDto = UserJoinRequestDto.builder()
-                .userName(userName)
+                .username(username)
                 .password(password)
                 .role(role)
                 .build();

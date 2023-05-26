@@ -33,7 +33,7 @@ class UserRepositoryTest {
         UserRole userRole = UserRole.USER;
 
         userRepository.save(User.builder()
-                .userName(userName)
+                .username(userName)
                 .password(password)
                 .role(userRole)
                 .build());
@@ -43,6 +43,30 @@ class UserRepositoryTest {
 
         // then
         User user = userList.get(0);
+        assertThat(user.getUsername()).isEqualTo(userName);
+    }
+
+    @DisplayName("findByUsername 메서드 테스트")
+    @Test
+    void findByUsername() {
+        // given
+        String userName = "bang12";
+        String password = "1234";
+        UserRole userRole = UserRole.USER;
+
+        userRepository.save(User.builder()
+                .username(userName)
+                .password(password)
+                .role(userRole)
+                .build());
+
+        List<User> all = userRepository.findAll();
+        assertThat(all.get(0).getUsername()).isEqualTo(userName);
+        // when
+        User user = userRepository.findByUsername(userName)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+
+        // then
         assertThat(user.getUsername()).isEqualTo(userName);
     }
 
