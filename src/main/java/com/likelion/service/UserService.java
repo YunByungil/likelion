@@ -5,6 +5,7 @@ import com.likelion.domain.repository.UserRepository;
 import com.likelion.dto.user.UserJoinRequestDto;
 import com.likelion.dto.user.UserUpdateDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,9 +15,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public Long save(UserJoinRequestDto requestDto) {
-        return userRepository.save(requestDto.toEntity()).getId();
+        return userRepository.save(requestDto.toEntity(bCryptPasswordEncoder.encode(requestDto.getPassword()))).getId();
     }
 
     public Long update(Long id, UserUpdateDto requestDto) {
