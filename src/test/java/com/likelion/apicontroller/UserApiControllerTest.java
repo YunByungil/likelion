@@ -76,7 +76,7 @@ class UserApiControllerTest {
 
         // then
         List<User> all = userRepository.findAll();
-        assertThat(all.get(0).getUserName()).isEqualTo(userName);
+        assertThat(all.get(0).getUsername()).isEqualTo(userName);
         assertThat(all.get(0).getPassword()).isEqualTo(password);
     }
 

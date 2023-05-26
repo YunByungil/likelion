@@ -43,7 +43,7 @@ class UserRepositoryTest {
 
         // then
         User user = userList.get(0);
-        assertThat(user.getUserName()).isEqualTo(userName);
+        assertThat(user.getUsername()).isEqualTo(userName);
     }
 
 }
