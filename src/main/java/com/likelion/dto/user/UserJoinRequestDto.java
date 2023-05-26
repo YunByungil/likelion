@@ -22,7 +22,7 @@ public class UserJoinRequestDto {
         this.role = UserRole.USER;
     }
 
-    public User toEntity() {
+    public User toEntity(String password) {
         return User.builder()
                 .username(username)
                 .password(password)
