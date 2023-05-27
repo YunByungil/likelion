@@ -28,9 +28,12 @@
             <p class="card-text" th:text="${post.content}"></p>
             <a th:href="@{/post/{id}(id=${post.id})}" class="btn btn-primary">보러 가기</a>
         </div>
-
+        <br>
     </div>
+
+    <button type="button" class="btn btn-secondary" onclick="location.href='/logout'">로그아웃</button>
 </div>
 
+<script src="js/post.js"></script>
 </body>
 </html>
