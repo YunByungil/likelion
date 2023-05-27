@@ -2,12 +2,10 @@ package com.likelion.dto.user;
 
 import com.likelion.domain.entity.User;
 import com.likelion.domain.enums.UserRole;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
+@Setter
 @NoArgsConstructor
 public class UserJoinRequestDto {
 
