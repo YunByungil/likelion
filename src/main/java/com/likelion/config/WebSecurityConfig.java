@@ -22,14 +22,14 @@ public class WebSecurityConfig {
     @Bean
     public WebSecurityCustomizer configure() {
         return (web) -> web.ignoring()
-                .requestMatchers(toH2Console())
                 .requestMatchers("/static/**");
     }
 
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests()
-                .requestMatchers("/login", "/join", "/user").permitAll()
+                .requestMatchers("/login", "/join", "/user", "/h2-console/**", "/api/v1/post", "api/v1/join").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
