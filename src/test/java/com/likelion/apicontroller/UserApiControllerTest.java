@@ -44,6 +44,7 @@ class UserApiControllerTest {
         mvc = MockMvcBuilders
                 .webAppContextSetup(context)
                 .build();
+        userRepository.deleteAll();
     }
 
     @AfterEach

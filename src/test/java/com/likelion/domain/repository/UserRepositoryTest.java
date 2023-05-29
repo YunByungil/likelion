@@ -4,6 +4,7 @@ import com.likelion.domain.entity.User;
 import com.likelion.domain.enums.UserRole;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,10 @@ class UserRepositoryTest {
     @Autowired
     UserRepository userRepository;
 
+    @BeforeEach
+    public void setUp() {
+        userRepository.deleteAll();
+    }
     @AfterEach
     public void cleanup() {
         userRepository.deleteAll();
