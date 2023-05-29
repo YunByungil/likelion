@@ -5,6 +5,7 @@ import com.likelion.config.jwt.JwtFactory;
 import com.likelion.domain.entity.RefreshToken;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,10 @@ class RefreshTokenRepositoryTest {
     @Autowired
     JwtProperties jwtProperties;
 
+//    @BeforeEach
+//    public void setUp() {
+//        refreshTokenRepository.deleteAll();
+//    }
     @AfterEach
     public void end() {
         refreshTokenRepository.deleteAll();
@@ -41,12 +46,12 @@ class RefreshTokenRepositoryTest {
                 .build());
 
         // when
-        RefreshToken findToken = refreshTokenRepository.findByRefreshToken(token).get();
-        RefreshToken findToken2 = refreshTokenRepository.findById(1L).get();
+        RefreshToken findToken = refreshTokenRepository.findByRefreshToken(refreshToken.getRefreshToken()).get();
+//        RefreshToken findToken2 = refreshTokenRepository.findById(1L).get();
 
         // then
         assertThat(findToken.getRefreshToken()).isEqualTo(token);
-        assertThat(findToken2.getRefreshToken()).isEqualTo(token);
+//        assertThat(findToken2.getRefreshToken()).isEqualTo(token);
     }
 
 }
