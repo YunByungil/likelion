@@ -28,4 +28,9 @@ public class UserService {
         user.update(requestDto.getPassword());
         return id;
     }
+
+    public User findById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+    }
 }
