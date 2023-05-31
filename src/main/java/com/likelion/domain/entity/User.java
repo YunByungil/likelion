@@ -31,11 +31,14 @@ public class User extends BaseTimeEntity implements UserDetails {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
+    private String nickname;
+
     @Builder
-    public User(String username, String password, UserRole role) {
+    public User(String username, String password, UserRole role, String nickname) {
         this.username = username;
         this.password = password;
         this.role = role;
+        this.nickname = nickname;
     }
 
     public void update(String password) {
