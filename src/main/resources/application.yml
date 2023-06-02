@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    include: oauth
   sql:
     init:
       mode: always
