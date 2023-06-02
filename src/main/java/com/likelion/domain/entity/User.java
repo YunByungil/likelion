@@ -24,7 +24,7 @@ public class User extends BaseTimeEntity implements UserDetails {
     @Column(name = "user_id")
     private Long id;
 
-
+    private String email;
     private String username;
 
     private String password;
@@ -34,7 +34,8 @@ public class User extends BaseTimeEntity implements UserDetails {
     private String nickname;
 
     @Builder
-    public User(String username, String password, UserRole role, String nickname) {
+    public User(String email, String username, String password, UserRole role, String nickname) {
+        this.email = email;
         this.username = username;
         this.password = password;
         this.role = role;
@@ -55,7 +56,7 @@ public class User extends BaseTimeEntity implements UserDetails {
 
     @Override // 사용자 id를 반환
     public String getUsername() {
-        return username;
+        return email;
     }
 
     @Override // 패스워드 반환
