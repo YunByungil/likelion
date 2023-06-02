@@ -18,11 +18,14 @@ public class Post extends BaseTimeEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String author;
+
     private String title;
     private String content;
 
     @Builder
-    public Post(String title, String content) {
+    public Post(String author, String title, String content) {
+        this.author = author;
         this.title = title;
         this.content = content;
     }
