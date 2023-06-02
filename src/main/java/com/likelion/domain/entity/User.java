@@ -42,7 +42,13 @@ public class User extends BaseTimeEntity implements UserDetails {
         this.nickname = nickname;
     }
 
-    public void update(String password) {
+    public User update(String nickname) {
+        this.nickname = nickname;
+
+        return this;
+    }
+
+    public void changePassword(String password) {
         this.password = password;
     }
 
@@ -51,12 +57,12 @@ public class User extends BaseTimeEntity implements UserDetails {
      */
     @Override // 권한 반환
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("USER"));
+        return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
     @Override // 사용자 id를 반환
     public String getUsername() {
-        return email;
+        return nickname;
     }
 
     @Override // 패스워드 반환
