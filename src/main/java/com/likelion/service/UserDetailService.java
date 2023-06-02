@@ -1,5 +1,6 @@
 package com.likelion.service;
 
+import com.likelion.domain.entity.User;
 import com.likelion.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,8 +15,9 @@ public class UserDetailService implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException(username));
+    public User loadUserByUsername(String email) throws UsernameNotFoundException {
+        System.out.println("email = " + email);
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException(email));
     }
 }
