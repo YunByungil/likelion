@@ -21,7 +21,7 @@ public class UserController {
 
     @PostMapping("/user")
     public String join(UserJoinRequestDto requestDto) {
-        log.info("requestDto = {}", requestDto.getUsername());
+        log.info("requestDto = {}", requestDto.getEmail());
         userService.save(requestDto);
         return "redirect:/login";
     }
