@@ -3,7 +3,9 @@ package com.likelion.apicontroller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.likelion.domain.entity.Post;
+import com.likelion.domain.entity.User;
 import com.likelion.domain.repository.PostRepository;
+import com.likelion.domain.repository.UserRepository;
 import com.likelion.dto.post.PostSaveRequestDto;
 import com.likelion.dto.post.PostUpdateRequestDto;
 import org.assertj.core.api.Assertions;
@@ -12,6 +14,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,11 +22,15 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -51,6 +58,11 @@ class PostApiControllerTest {
     @Autowired
     PostRepository postRepository;
 
+    @Autowired
+    UserRepository userRepository;
+
+    User user;
+
     @BeforeEach
     public void setUp(RestDocumentationContextProvider restDocumentation) {
         mvc = MockMvcBuilders
@@ -58,6 +70,14 @@ class PostApiControllerTest {
                 .apply(documentationConfiguration(restDocumentation))
                 .build();
         postRepository.deleteAll();
+
+        user = userRepository.save(User.builder()
+                .email("user@gamil.com")
+                .password("test")
+                .build());
+
+        SecurityContext context1 = SecurityContextHolder.getContext();
+        context1.setAuthentication(new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities()));
     }
 
     @AfterEach
@@ -69,10 +89,12 @@ class PostApiControllerTest {
     @Test
     void addPost() throws Exception {
         // given
+        String author = "작성자";
         String title = "제목";
         String content = "내용";
 
         PostSaveRequestDto requestDto = PostSaveRequestDto.builder()
+                .author(author)
                 .title(title)
                 .content(content)
                 .build();
@@ -80,9 +102,13 @@ class PostApiControllerTest {
 
         String url = "http://localhost:8080/api/v1/post";
 
+        Principal principal = Mockito.mock(Principal.class);
+        Mockito.when(principal.getName()).thenReturn("작성자");
+
         // when
         mvc.perform(post(url)
                 .contentType(MediaType.APPLICATION_JSON)
+                .principal(principal)
                 .content(new ObjectMapper().writeValueAsString(requestDto)))
                 .andExpect(status().isCreated())
                 .andDo(document("/post",
@@ -90,7 +116,8 @@ class PostApiControllerTest {
                         preprocessResponse(prettyPrint()),
                         requestFields(
                                 fieldWithPath("title").description("Post 제목"),
-                                fieldWithPath("content").description("Post 내용")
+                                fieldWithPath("content").description("Post 내용"),
+                                fieldWithPath("author").description("Post 작성자")
                         )
                 ));
 
@@ -104,12 +131,14 @@ class PostApiControllerTest {
     @Test
     void getAllPost() throws Exception {
         // given
+        String author = "작성자";
         String title = "제목임";
         String content = "내용임";
         String url = "http://localhost:8080/api/v1/post";
 
         for (int i = 0; i < 5; i++) {
             postRepository.save(Post.builder()
+                    .author(author + i)
                     .title(title + i)
                     .content(content + i)
                     .build());
@@ -131,6 +160,7 @@ class PostApiControllerTest {
                                 fieldWithPath("[].id").description("Post 번호"),
                                 fieldWithPath("[].title").description("Post 제목"),
                                 fieldWithPath("[].content").description("Post 내용"),
+                                fieldWithPath("[].author").description("Post 작성자"),
                                 fieldWithPath("[].createdAt").description("Post 작성일")
                         )));
 
