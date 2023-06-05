@@ -40,6 +40,7 @@ class PostServiceTest {
     @Test
     void getAllPost() {
         // given
+        String author = "작성자";
         String title = "게시글";
         String content = "내용";
 
@@ -48,7 +49,7 @@ class PostServiceTest {
                     .title(title + i)
                     .content(content)
                     .build();
-            postService.save(requestDto);
+            postService.save(requestDto, author);
         }
 
 
@@ -65,6 +66,7 @@ class PostServiceTest {
     @Test
     void deletePost() {
         // given
+        String author = "작성자";
         String title = "게시글";
         String content = "내용";
 
@@ -73,7 +75,7 @@ class PostServiceTest {
                 .content(content)
                 .build();
 
-        Post post = postService.save(saveRequestDto);
+        Post post = postService.save(saveRequestDto, author);
 
         // when
         postService.deletePost(post.getId());
@@ -88,13 +90,14 @@ class PostServiceTest {
     @Test
     void updatePost() {
         // given
+        String author = "작성자";
         String title = "게시글";
         String content = "내용";
 
         Post post = postService.save(PostSaveRequestDto.builder()
                 .title(title)
                 .content(content)
-                .build());
+                .build(), author);
 
         String changeTitle = "게시글수정";
         String changeContent = "내용수정";

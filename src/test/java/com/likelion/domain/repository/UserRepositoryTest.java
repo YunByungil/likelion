@@ -33,13 +33,15 @@ class UserRepositoryTest {
     @Test
     void join() {
         // given
-        String userName = "bang12";
+        String email = "bang12@naver.com";
         String password = "1234";
+        String nickname = "nickname";
         UserRole userRole = UserRole.USER;
 
         userRepository.save(User.builder()
-                .username(userName)
+                .email(email)
                 .password(password)
+                .nickname(nickname)
                 .role(userRole)
                 .build());
 
@@ -48,31 +50,31 @@ class UserRepositoryTest {
 
         // then
         User user = userList.get(0);
-        assertThat(user.getUsername()).isEqualTo(userName);
+        assertThat(user.getEmail()).isEqualTo(email);
     }
 
     @DisplayName("findByUsername 메서드 테스트")
     @Test
     void findByUsername() {
         // given
-        String userName = "bang12";
+        String email = "bang12@naver.com";
         String password = "1234";
         UserRole userRole = UserRole.USER;
 
         userRepository.save(User.builder()
-                .username(userName)
+                .email(email)
                 .password(password)
                 .role(userRole)
                 .build());
 
         List<User> all = userRepository.findAll();
-        assertThat(all.get(0).getUsername()).isEqualTo(userName);
+        assertThat(all.get(0).getEmail()).isEqualTo(email);
         // when
-        User user = userRepository.findByUsername(userName)
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
 
         // then
-        assertThat(user.getUsername()).isEqualTo(userName);
+        assertThat(user.getEmail()).isEqualTo(email);
     }
 
 }
