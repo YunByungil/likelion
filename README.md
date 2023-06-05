@@ -3,7 +3,7 @@
 ### 공통
 - [x] BaseTimeEntity
 - [x] SpringSecurity
-- [ ] JWT  
+- [x] JWT  
   
 <hr>  
 
@@ -33,5 +33,5 @@
 - [x] UserApiControllerTest에서 updateUserInfo jacoco 테스트 실패
 - [x] Q타입, DTO타입 jacoco에서 제외시키기.
 - [x] Spring Rest Docs 적용
-- [ ] hasRole("USER") 추가하기
+- [x] hasRole("USER") 추가하기
 - [ ] 테스트 코드 전체 수정 => hasRole 이후로
