@@ -11,13 +11,15 @@ public class UserJoinRequestDto {
 
     private String email;
     private String username;
+    private String nickname;
     private String password;
     private UserRole role;
 
     @Builder
-    public UserJoinRequestDto(String email, String username, String password, UserRole role) {
+    public UserJoinRequestDto(String email, String username, String nickname, String password, UserRole role) {
         this.email = email;
         this.username = username;
+        this.nickname = nickname;
         this.password = password;
         this.role = UserRole.USER;
     }
@@ -26,6 +28,7 @@ public class UserJoinRequestDto {
         return User.builder()
                 .email(email)
                 .username(username)
+                .nickname(nickname)
                 .password(password)
                 .role(UserRole.USER)
                 .build();

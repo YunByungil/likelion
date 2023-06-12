@@ -56,12 +56,15 @@ class UserApiControllerTest {
     @Test
     void join() throws Exception {
         // given
+        String email = "bang@naver.com";
         String username = "bang12";
         String password = "1234";
         UserRole role = UserRole.USER;
 
         UserJoinRequestDto requestDto = UserJoinRequestDto.builder()
+                .email(email)
                 .username(username)
+                .nickname(username)
                 .password(password)
                 .role(role)
                 .build();
