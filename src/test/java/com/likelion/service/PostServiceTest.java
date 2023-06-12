@@ -1,7 +1,9 @@
 package com.likelion.service;
 
 import com.likelion.domain.entity.Post;
+import com.likelion.domain.entity.User;
 import com.likelion.domain.repository.PostRepository;
+import com.likelion.domain.repository.UserRepository;
 import com.likelion.dto.post.PostListResponseDto;
 import com.likelion.dto.post.PostSaveRequestDto;
 import com.likelion.dto.post.PostUpdateRequestDto;
@@ -12,6 +14,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
 
@@ -27,9 +32,24 @@ class PostServiceTest {
     @Autowired
     PostRepository postRepository;
 
+    @Autowired
+    UserRepository userRepository;
+
+    User user;
     @BeforeEach
     public void setUp() {
         postRepository.deleteAll();
+
+        /* 로그인 정보때문에 필요함 */
+        user = userRepository.save(User.builder()
+                .email("user@gamil.com")
+                .password("test")
+                .username("작성자")
+                .nickname("닉네임")
+                .build());
+
+        SecurityContext context1 = SecurityContextHolder.getContext();
+        context1.setAuthentication(new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities()));
     }
     @AfterEach
     public void end() {
@@ -40,7 +60,7 @@ class PostServiceTest {
     @Test
     void getAllPost() {
         // given
-        String author = "작성자";
+        String author = "닉네임";
         String title = "게시글";
         String content = "내용";
 
@@ -66,19 +86,19 @@ class PostServiceTest {
     @Test
     void deletePost() {
         // given
-        String author = "작성자";
         String title = "게시글";
         String content = "내용";
 
         PostSaveRequestDto saveRequestDto = PostSaveRequestDto.builder()
+                .author(user.getUsername())
                 .title(title)
                 .content(content)
                 .build();
 
-        Post post = postService.save(saveRequestDto, author);
+        Post post = postService.save(saveRequestDto, user.getUsername());
 
         // when
-        postService.deletePost(post.getId());
+        postService.deletePost(post.getId()); // Service에서 getContext가 아닌, Controller에서 체크하는 식으로 진행한다.
 
         List<Post> all = postRepository.findAll();
 
@@ -90,14 +110,13 @@ class PostServiceTest {
     @Test
     void updatePost() {
         // given
-        String author = "작성자";
         String title = "게시글";
         String content = "내용";
 
         Post post = postService.save(PostSaveRequestDto.builder()
                 .title(title)
                 .content(content)
-                .build(), author);
+                .build(), user.getUsername());
 
         String changeTitle = "게시글수정";
         String changeContent = "내용수정";
