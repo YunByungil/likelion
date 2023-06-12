@@ -85,15 +85,19 @@ class UserApiControllerTest {
 //        assertThat(all.get(0).getPassword()).isEqualTo(password);
     }
 
-    @DisplayName("회원 정보 수정_Mock")
+    @DisplayName("회원 정보(닉네임) 수정_Mock")
     @Test
     void updateUserInfo() throws Exception {
         // given
+        String email = "bang@naver.com";
         String username = "bang12";
+        String nickname = "bang12";
         String password = "1234";
         UserRole role = UserRole.USER;
 
         UserJoinRequestDto requestDto = UserJoinRequestDto.builder()
+                .email(email)
+                .nickname(nickname)
                 .username(username)
                 .password(password)
                 .role(role)
@@ -102,10 +106,10 @@ class UserApiControllerTest {
         User savedUser = userRepository.save(requestDto.toEntity(password));
 
         Long id = savedUser.getId();
-        String changePassword = "test22";
+        String changeNickname = "test22";
 
         UserUpdateDto updateDto = UserUpdateDto.builder()
-                .password(changePassword)
+                .password(changeNickname)
                 .build();
 
         String url = "http://localhost:8080/api/v1/user/" + id;
@@ -120,6 +124,6 @@ class UserApiControllerTest {
         List<User> all = userRepository.findAll();
         // TODO: 암호화 설정
 //        assertThat(all.get(0).getPassword()).isEqualTo(changePassword);
-        assertThat(changePassword).isEqualTo(all.get(0).getPassword());
+        assertThat(all.get(0).getNickname()).isEqualTo(changeNickname);
     }
 }
