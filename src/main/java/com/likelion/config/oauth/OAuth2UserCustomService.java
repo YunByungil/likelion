@@ -37,6 +37,7 @@ public class OAuth2UserCustomService extends DefaultOAuth2UserService {
                 .map(entity -> entity.update(name))
                 .orElse(User.builder()
                         .email(email)
+                        .username(name)
                         .password("gdgdgdgd")
                         .nickname(name)
                         .role(UserRole.USER) // User
