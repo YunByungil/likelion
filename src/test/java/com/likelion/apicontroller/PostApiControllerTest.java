@@ -22,7 +22,9 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
@@ -40,6 +42,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -67,13 +70,18 @@ class PostApiControllerTest {
     public void setUp(RestDocumentationContextProvider restDocumentation) {
         mvc = MockMvcBuilders
                 .webAppContextSetup(context)
-                .apply(documentationConfiguration(restDocumentation))
+                .apply(documentationConfiguration(restDocumentation)
+                .operationPreprocessors()
+                .withRequestDefaults(prettyPrint())
+                .withResponseDefaults(prettyPrint()))
                 .build();
         postRepository.deleteAll();
 
         user = userRepository.save(User.builder()
                 .email("user@gamil.com")
                 .password("test")
+                .username("작성자")
+                .nickname("닉네임")
                 .build());
 
         SecurityContext context1 = SecurityContextHolder.getContext();
@@ -89,21 +97,21 @@ class PostApiControllerTest {
     @Test
     void addPost() throws Exception {
         // given
-        String author = "작성자";
+//        String author = "작성자";
         String title = "제목";
         String content = "내용";
 
         PostSaveRequestDto requestDto = PostSaveRequestDto.builder()
-                .author(author)
+                .author(user.getUsername())
                 .title(title)
                 .content(content)
                 .build();
-
+        
 
         String url = "http://localhost:8080/api/v1/post";
 
         Principal principal = Mockito.mock(Principal.class);
-        Mockito.when(principal.getName()).thenReturn("작성자");
+        Mockito.when(principal.getName()).thenReturn("닉네임");
 
         // when
         mvc.perform(post(url)
@@ -112,8 +120,6 @@ class PostApiControllerTest {
                 .content(new ObjectMapper().writeValueAsString(requestDto)))
                 .andExpect(status().isCreated())
                 .andDo(document("/post",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
                         requestFields(
                                 fieldWithPath("title").description("Post 제목"),
                                 fieldWithPath("content").description("Post 내용"),
@@ -125,6 +131,7 @@ class PostApiControllerTest {
         List<Post> all = postRepository.findAll();
         assertThat(all.get(0).getTitle()).isEqualTo(title);
         assertThat(all.get(0).getContent()).isEqualTo(content);
+
     }
 
     @DisplayName("게시글 목록 조회 성공")
@@ -143,7 +150,11 @@ class PostApiControllerTest {
                     .content(content + i)
                     .build());
         }
-//        Post post = postRepository.findById(1L).get();
+
+//        Authentication authentication = Mockito.mock(Authentication.class);
+//        Mockito.when(authentication.getName()).thenReturn("닉네임2");
+//        Principal principal = Mockito.mock(Principal.class);
+//        Mockito.when(principal.getName()).thenReturn("닉네임");
 
         // when
         mvc.perform(get(url)
@@ -175,28 +186,52 @@ class PostApiControllerTest {
         String content = "상세내용";
 
         Post post = postRepository.save(Post.builder()
+                .author(user.getUsername())
                 .title(title)
                 .content(content)
                 .build());
 
-        String url = "http://localhost:8080/api/v1/post/" + post.getId();
+//        String url = "http://localhost:8080/api/v1/post/" + post.getId();
+        String url = "http://localhost:8080/api/v1/post/";
 
         // when
-//        mvc.perform(get(url).accept(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.title").value(title))
-//                .andExpect(jsonPath("$.content").value(content));
-        ResultActions resultActions = mvc.perform(get(url).accept(MediaType.APPLICATION_JSON));
+        mvc.perform(RestDocumentationRequestBuilders.get(url + "{id}", post.getId())
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value(title))
+                .andExpect(jsonPath("$.content").value(content))
+                .andDo(document("/post-get-one",
+                        responseFields(
+                                fieldWithPath("id").description("Post 번호"),
+                                fieldWithPath("title").description("Post 제목"),
+                                fieldWithPath("content").description("Post 내용"),
+                                fieldWithPath("author").description("Post 작성자"),
+                                fieldWithPath("createdAt").description("Post 작성일")
+                        ),
+                        pathParameters(
+                        parameterWithName("id").description("Post 번호")
+
+
+//                        preprocessRequest(prettyPrint()),
+//                        preprocessResponse(prettyPrint()),
+//                        responseFields(
+//                                fieldWithPath("id").description("Post 번호"),
+//                                fieldWithPath("title").description("Post 제목"),
+//                                fieldWithPath("content").description("Post 내용"),
+//                                fieldWithPath("author").description("Post 작성자"),
+//                                fieldWithPath("createdAt").description("Post 작성일")
+                        )));
+//        ResultActions resultActions = mvc.perform(get(url).accept(MediaType.APPLICATION_JSON));
 
 
         // then
         List<Post> all = postRepository.findAll();
         assertThat(all.get(0).getTitle()).isEqualTo(title);
 
-        resultActions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content").value(content))
-                .andExpect(jsonPath("$.title").value(title));
+//        resultActions
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.content").value(content))
+//                .andExpect(jsonPath("$.title").value(title));
 
 
     }
@@ -205,19 +240,36 @@ class PostApiControllerTest {
     @Test
     void deletePost() throws Exception {
         // given
+        // TODO: author에 대한 정보를 넣어야 삭제할 수 있음. 계속 권한이 없다고 뜨는데 뭐가 문제지? -> 해결 완료
+        // TODO: Request 정보에 뭘 넣어야 될까? -> pathParameters로 해결 완료
+        // TODO: 실패했을 때 테스트 하자
         String title = "제목1";
         String content = "내용1";
 
         Post post = postRepository.save(Post.builder()
+                .author(user.getUsername())
                 .title(title)
                 .content(content)
                 .build());
 
-        String url = "http://localhost:8080/api/v1/post/" + post.getId();
+//        String url = "http://localhost:8080/api/v1/post/" + post.getId();
+        String url = "http://localhost:8080/api/v1/post/{id}";
+        System.out.println("user.getUsername() = " + user.getUsername());
+        System.out.println("post.getId() = " + post.getId());
+        System.out.println("post.getAuthor() = " + post.getAuthor());
+        System.out.println("post.getTitle() = " + post.getTitle());
+        System.out.println("post.getContent() = " + post.getContent());
+
+        Principal principal = Mockito.mock(Principal.class);
+        Mockito.when(principal.getName()).thenReturn("닉네임");
 
         // when
-        mvc.perform(delete(url))
-                .andExpect(status().isOk());
+        mvc.perform(RestDocumentationRequestBuilders.delete(url, post.getId()))
+                .andExpect(status().isOk())
+                .andDo(document("/post-delete",
+                        pathParameters(
+                                parameterWithName("id").description("Post 번호")
+                        )));
 
         // then
         List<Post> all = postRepository.findAll();
@@ -233,6 +285,7 @@ class PostApiControllerTest {
         String content = "내용";
 
         Post post = postRepository.save(Post.builder()
+                .author(user.getUsername())
                 .title(title)
                 .content(content)
                 .build());
@@ -245,13 +298,23 @@ class PostApiControllerTest {
                 .content(newContent)
                 .build();
 
-        String url = "http://localhost:8080/api/v1/post/" + post.getId();
+//        String url = "http://localhost:8080/api/v1/post/" + post.getId();
+        String url = "http://localhost:8080/api/v1/post/{id}";
 
         // when
-        mvc.perform(put(url)
+        mvc.perform(RestDocumentationRequestBuilders.put(url, post.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(requestDto)))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andDo(document("/post-update",
+                        pathParameters(
+                                parameterWithName("id").description("Post 번호")
+                        ),
+                        requestFields(
+                                fieldWithPath("title").description("새로운 제목"),
+                                fieldWithPath("content").description("새로운 내용")
+                        )
+                        ));
 
         // then
         List<Post> all = postRepository.findAll();

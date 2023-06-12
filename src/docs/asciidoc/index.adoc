@@ -13,11 +13,33 @@
 
 include::{snippets}/post/http-request.adoc[]
 
+==== Request Field
+
+include::{snippets}/post/request-fields.adoc[]
+
+// ==== HTTP response
+//
+// include::{snippets}/post/http-response.adoc[]
+// ==== Response Field
+//
+// include::{snippets}/post/response-body.adoc[]
+
+[[resources-post-get-one]]
+=== Post 상세 조회
+
+==== HTTP request
+
+include::{snippets}/post-get-one/http-request.adoc[]
+
+==== Request Field
+
+include::{snippets}/post-get-one/path-parameters.adoc[]
+
 ==== HTTP response
 
-include::{snippets}/post/http-response.adoc[]
+include::{snippets}/post-get-one/http-response.adoc[]
 
-[[resources-post-create]]
+[[resources-post-get-all]]
 === Post 목록 조회
 
 ==== HTTP request
@@ -27,3 +49,38 @@ include::{snippets}/post-get-all/http-request.adoc[]
 ==== HTTP response
 
 include::{snippets}/post-get-all/http-response.adoc[]
+
+[[resources-post-delete]]
+=== Post 삭제
+
+==== HTTP request
+
+include::{snippets}/post-delete/http-request.adoc[]
+
+==== request param
+
+include::{snippets}/post-delete/path-parameters.adoc[]
+
+==== HTTP response
+
+include::{snippets}/post-delete/http-response.adoc[]
+
+[[resources-post-update]]
+=== Post 수정
+
+==== HTTP request
+
+include::{snippets}/post-update/http-request.adoc[]
+
+==== request param
+
+include::{snippets}/post-update/path-parameters.adoc[]
+
+==== request field
+
+include::{snippets}/post-update/request-fields.adoc[]
+
+==== HTTP response
+
+include::{snippets}/post-update/http-response.adoc[]
+
