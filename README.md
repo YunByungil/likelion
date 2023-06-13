@@ -35,3 +35,12 @@
 - [x] Spring Rest Docs 적용
 - [x] hasRole("USER") 추가하기
 - [ ] 테스트 코드 전체 수정 => hasRole 이후로
+
+userDetail에 구현한 내용을 기반으로 내가 getUsername 메서드에 return 값이 nickname이잖아?
+그렇게 설정해놨기 때문에  @Beforeeach 에 설정한 setAuthen 어쩌구에 
+user 객체를 넣어도 null 떳떤 거야. 난 회원 가입에서 nickname 설정을 아예 안 했었거든?
+이거 잘 해결하자.//  
+  
+- [ ] OAuth2 로그인을 진행했을 때, username 으로 통합하자.
+- [ ] '' 삭제 수정할 때, username으로 하지 말고 id로 변경하자. => 연관 관계 매핑 후 진행
+- [ ] TokenAuthenticationFilter 에서 토큰으로 강제 권한 User가 아닌, 가입 된 유저의 role 불러서 넣자.
