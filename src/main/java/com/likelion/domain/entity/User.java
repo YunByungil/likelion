@@ -10,6 +10,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -32,6 +33,9 @@ public class User extends BaseTimeEntity implements UserDetails {
     private UserRole role;
 
     private String nickname;
+
+    @OneToMany(mappedBy = "user")
+    private List<Post> post = new ArrayList<>();
 
     @Builder
     public User(String email, String username, String password, UserRole role, String nickname) {
@@ -57,7 +61,7 @@ public class User extends BaseTimeEntity implements UserDetails {
      */
     @Override // 권한 반환
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
+        return List.of(new SimpleGrantedAuthority("USER"));
     }
 
     @Override // 사용자 id를 반환
