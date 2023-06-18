@@ -50,16 +50,20 @@ public class PostApiController {
     }
 
     @DeleteMapping("/api/v1/post/{id}")
-    public ResponseEntity<Void> deletePost(@PathVariable Long id) {
-        postService.deletePost(id);
+    public ResponseEntity<Void> deletePost(@PathVariable Long id,
+                                           Principal principal) {
+        Long userId = Long.parseLong(principal.getName());
+        postService.deletePost(id, userId);
 
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("/api/v1/post/{id}")
     public ResponseEntity<Void> updatePost(@PathVariable Long id,
-                                           @RequestBody PostUpdateRequestDto requestDto) {
-        postService.updatePost(id, requestDto);
+                                           @RequestBody PostUpdateRequestDto requestDto,
+                                           Principal principal) {
+        Long userId = Long.parseLong(principal.getName());
+        postService.updatePost(id, requestDto, userId);
 
         return ResponseEntity.ok().build();
     }

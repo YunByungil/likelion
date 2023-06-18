@@ -250,6 +250,7 @@ class PostApiControllerTest {
                 .author(user.getUsername())
                 .title(title)
                 .content(content)
+                .user(user)
                 .build());
 
 //        String url = "http://localhost:8080/api/v1/post/" + post.getId();
@@ -261,10 +262,11 @@ class PostApiControllerTest {
         System.out.println("post.getContent() = " + post.getContent());
 
         Principal principal = Mockito.mock(Principal.class);
-        Mockito.when(principal.getName()).thenReturn("닉네임");
+        Mockito.when(principal.getName()).thenReturn("" + user.getId());
 
         // when
-        mvc.perform(RestDocumentationRequestBuilders.delete(url, post.getId()))
+        mvc.perform(RestDocumentationRequestBuilders.delete(url, post.getId())
+                .principal(principal))
                 .andExpect(status().isOk())
                 .andDo(document("/post-delete",
                         pathParameters(
@@ -288,6 +290,7 @@ class PostApiControllerTest {
                 .author(user.getUsername())
                 .title(title)
                 .content(content)
+                .user(user)
                 .build());
 
         String newTitle = "새로운 제목";
@@ -301,8 +304,12 @@ class PostApiControllerTest {
 //        String url = "http://localhost:8080/api/v1/post/" + post.getId();
         String url = "http://localhost:8080/api/v1/post/{id}";
 
+        Principal principal = Mockito.mock(Principal.class);
+        Mockito.when(principal.getName()).thenReturn("" + user.getId());
+
         // when
         mvc.perform(RestDocumentationRequestBuilders.put(url, post.getId())
+                .principal(principal)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(requestDto)))
                 .andExpect(status().isOk())

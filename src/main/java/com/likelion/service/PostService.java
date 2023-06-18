@@ -24,7 +24,6 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
 
-    @Transactional
     public Post save(PostSaveRequestDto requestDto, Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 계정입니다."));
@@ -51,26 +50,35 @@ public class PostService {
         return new PostResponseDto(post);
     }
 
-    public void deletePost(Long id) {
+    public void deletePost(Long id, Long userId) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
 
-        authorizePostAuthor(post);
+        authorizePostAuthor(post, user);
         postRepository.delete(post);
     }
 
-    public void updatePost(Long id, PostUpdateRequestDto requestDto) {
+    public void updatePost(Long id, PostUpdateRequestDto requestDto, Long userId) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
 
-        authorizePostAuthor(post);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+
+        authorizePostAuthor(post, user);
         post.update(requestDto.getTitle(), requestDto.getContent());
     }
 
-    private static void authorizePostAuthor(Post post) {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    private static void authorizePostAuthor(Post post, User user) {
+//        String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        if (!post.getAuthor().equals(username)) {
+//        if (!post.getAuthor().equals(username)) {
+//            throw new IllegalArgumentException("권한이 없습니다.");
+//        }
+        System.out.println("post.getUser().getId() = " + post.getUser().getId());
+        if (post.getUser().getId() != user.getId()) {
             throw new IllegalArgumentException("권한이 없습니다.");
         }
     }

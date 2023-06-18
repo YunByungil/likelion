@@ -49,7 +49,7 @@ class PostServiceTest {
                 .build());
 
         SecurityContext context1 = SecurityContextHolder.getContext();
-        context1.setAuthentication(new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities()));
+        context1.setAuthentication(new UsernamePasswordAuthenticationToken(user.getId(), user.getPassword(), user.getAuthorities()));
     }
     @AfterEach
     public void end() {
@@ -98,7 +98,7 @@ class PostServiceTest {
         Post post = postService.save(saveRequestDto, user.getId());
 
         // when
-        postService.deletePost(post.getId()); // Service에서 getContext가 아닌, Controller에서 체크하는 식으로 진행한다.
+        postService.deletePost(post.getId(), user.getId()); // Service에서 getContext가 아닌, Controller에서 체크하는 식으로 진행한다.
 
         List<Post> all = postRepository.findAll();
 
@@ -126,7 +126,7 @@ class PostServiceTest {
                 .build();
 
         // when
-        postService.updatePost(post.getId(), requestDto);
+        postService.updatePost(post.getId(), requestDto, user.getId());
 
         // then
         List<PostListResponseDto> all = postService.findAll();
