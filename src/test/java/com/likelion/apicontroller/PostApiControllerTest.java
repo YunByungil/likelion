@@ -85,7 +85,7 @@ class PostApiControllerTest {
                 .build());
 
         SecurityContext context1 = SecurityContextHolder.getContext();
-        context1.setAuthentication(new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities()));
+        context1.setAuthentication(new UsernamePasswordAuthenticationToken(user.getId(), user.getPassword(), user.getAuthorities()));
     }
 
     @AfterEach
@@ -111,7 +111,7 @@ class PostApiControllerTest {
         String url = "http://localhost:8080/api/v1/post";
 
         Principal principal = Mockito.mock(Principal.class);
-        Mockito.when(principal.getName()).thenReturn("닉네임");
+        Mockito.when(principal.getName()).thenReturn("" + user.getId());
 
         // when
         mvc.perform(post(url)
