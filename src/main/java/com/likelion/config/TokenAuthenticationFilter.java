@@ -30,6 +30,10 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         if (tokenProvider.validToken(token)) {
             Authentication authentication = tokenProvider.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
+            log.info("info = {}", authentication.getDetails());
+            log.info("info = {}", authentication.getPrincipal());
+            log.info("infoName!!!! = {}", authentication.getName());
+            log.info("info = {}", authentication.getAuthorities());
         }
 
         filterChain.doFilter(request, response);
@@ -37,6 +41,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private String getAccessToken(String authorizationHeader) {
+        log.info("gg");
         if (authorizationHeader != null && authorizationHeader.startsWith(TOKEN_PREFIX)) {
             return authorizationHeader.substring(TOKEN_PREFIX.length());
         }
