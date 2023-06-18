@@ -1,6 +1,7 @@
 package com.likelion.dto.post;
 
 import com.likelion.domain.entity.Post;
+import com.likelion.domain.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,11 +22,12 @@ public class PostSaveRequestDto {
         this.content = content;
     }
 
-    public Post toEntity(String author) {
+    public Post toEntity(User user) {
         return Post.builder()
-                .author(author)
+                .author(user.getUsername())
                 .title(title)
                 .content(content)
+                .user(user)
                 .build();
     }
 }

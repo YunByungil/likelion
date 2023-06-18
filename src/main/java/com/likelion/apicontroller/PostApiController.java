@@ -1,13 +1,14 @@
 package com.likelion.apicontroller;
 
 import com.likelion.domain.entity.Post;
-import com.likelion.domain.entity.User;
 import com.likelion.dto.post.PostListResponseDto;
 import com.likelion.dto.post.PostResponseDto;
 import com.likelion.dto.post.PostSaveRequestDto;
 import com.likelion.dto.post.PostUpdateRequestDto;
 import com.likelion.service.PostService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -19,16 +20,19 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
+@Slf4j
 public class PostApiController {
 
     private final PostService postService;
 
     @PostMapping("/api/v1/post")
-    public ResponseEntity<Post> addPost(@RequestBody PostSaveRequestDto requestDto,
+    public ResponseEntity<Void> addPost(@RequestBody PostSaveRequestDto requestDto,
                                         Principal principal) {
-        Post savedPost = postService.save(requestDto, principal.getName());
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(savedPost);
+        Long userId = Long.parseLong(principal.getName());
+        postService.save(requestDto, userId);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+//        return ResponseEntity.status(HttpStatus.CREATED)
+//                .body(savedPost);
     }
 
     @GetMapping("/api/v1/post")
