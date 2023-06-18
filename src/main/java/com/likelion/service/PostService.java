@@ -1,7 +1,9 @@
 package com.likelion.service;
 
 import com.likelion.domain.entity.Post;
+import com.likelion.domain.entity.User;
 import com.likelion.domain.repository.PostRepository;
+import com.likelion.domain.repository.UserRepository;
 import com.likelion.dto.post.PostListResponseDto;
 import com.likelion.dto.post.PostResponseDto;
 import com.likelion.dto.post.PostSaveRequestDto;
@@ -20,9 +22,18 @@ import java.util.stream.Collectors;
 public class PostService {
 
     private final PostRepository postRepository;
+    private final UserRepository userRepository;
 
-    public Post save(PostSaveRequestDto requestDto, String username) {
-        return postRepository.save(requestDto.toEntity(username));
+    @Transactional
+    public Post save(PostSaveRequestDto requestDto, Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 계정입니다."));
+
+        Post post = requestDto.toEntity(user);
+        System.out.println("user.getUsername() = " + user.getUsername());
+        System.out.println("user.getId() = " + user.getId());
+        System.out.println("post.getTitle() = " + post.getTitle());
+        return postRepository.save(post);
     }
 
     // TODO: List<PostResponseDto>로 수정

@@ -69,7 +69,7 @@ class PostServiceTest {
                     .title(title + i)
                     .content(content)
                     .build();
-            postService.save(requestDto, author);
+            postService.save(requestDto, user.getId());
         }
 
 
@@ -95,7 +95,7 @@ class PostServiceTest {
                 .content(content)
                 .build();
 
-        Post post = postService.save(saveRequestDto, user.getUsername());
+        Post post = postService.save(saveRequestDto, user.getId());
 
         // when
         postService.deletePost(post.getId()); // Service에서 getContext가 아닌, Controller에서 체크하는 식으로 진행한다.
@@ -116,7 +116,7 @@ class PostServiceTest {
         Post post = postService.save(PostSaveRequestDto.builder()
                 .title(title)
                 .content(content)
-                .build(), user.getUsername());
+                .build(), user.getId());
 
         String changeTitle = "게시글수정";
         String changeContent = "내용수정";
