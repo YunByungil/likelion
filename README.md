@@ -4,7 +4,8 @@
 - [x] BaseTimeEntity
 - [x] SpringSecurity
 - [x] JWT  
-  
+- [ ] Response 값 만들어서 통일
+   
 <hr>  
 
   
