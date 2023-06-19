@@ -20,6 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -37,6 +38,9 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -126,5 +130,35 @@ class CommentApiControllerTest {
         // then
         List<Comment> all = commentRepository.findAll();
         assertThat(all.size()).isEqualTo(1);
+    }
+
+    @DisplayName("댓글 삭제 API 성공")
+    @Test
+    void deleteComment() throws Exception {
+        // given
+        String content = "댓글 작성 완료";
+        Comment comment = commentRepository.save(Comment.builder()
+                .user(user)
+                .post(post)
+                .content(content)
+                .build());
+
+        String url = "http://localhost:8080/api/v1/post/{postId}/comment/{commentId}";
+
+        Principal principal = Mockito.mock(Principal.class);
+        Mockito.when(principal.getName()).thenReturn("" + user.getId());
+
+        // when
+        mvc.perform(RestDocumentationRequestBuilders.delete(url, post.getId(), comment.getId())
+                .principal(principal))
+                .andExpect(status().isOk())
+                .andDo(document("/comment-delete",
+                        pathParameters(
+                                parameterWithName("postId").description("Post 번호"),
+                                parameterWithName("commentId").description("Comment 번호")
+                        )));
+
+
+        // then
     }
 }
