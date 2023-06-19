@@ -17,12 +17,16 @@ spring:
       ddl-auto: create
     properties:
       hibernate:
-        #        show_sql: true
+        show_sql: true
         format_sql: true
         default_batch_fetch_size: 1000
     open-in-view: false
 
     # 테이블 생성 후에 data.sql 실행
+
+logging:
+  level:
+    org.hibernate.SQL: debug
 
 # jwt
 jwt:
