@@ -86,4 +86,52 @@ class CommentServiceTest {
         // then
         assertThat(all.size()).isEqualTo(1);
     }
+
+    /**
+     * 다른 사람 댓글 삭제할 때 예외 발생 테스트 추가 작성
+     */
+    @DisplayName("댓글 삭제 기능 테스트 (검증 포함)")
+    @Test
+    void deleteComment() {
+        // given
+        CommentSaveRequestDto dto = CommentSaveRequestDto.builder()
+                .content("댓글 내용")
+                .build();
+
+        Comment comment = commentRepository.save(dto.toEntity(user, post));
+
+        // when
+        commentService.delete(user.getId(), post.getId(), comment.getId());
+
+        List<Comment> all = commentRepository.findAll();
+
+        // then
+        assertThat(all.size()).isEqualTo(0);
+    }
+
+    @DisplayName("내가 작성한 댓글이 아닐 때 예외(권한) 발생")
+    @Test
+    void throwException() {
+        // given
+
+        User user2 = userRepository.save(User.builder()
+                .nickname("닉네임")
+                .username("작성자")
+                .role(UserRole.USER)
+                .email("test@naver.com")
+                .password("gd")
+                .build());
+
+        CommentSaveRequestDto dto = CommentSaveRequestDto.builder()
+                .content("댓글 내용")
+                .build();
+
+        Comment comment = commentRepository.save(dto.toEntity(user, post));
+        // when
+
+        // then
+        assertThatThrownBy(() -> {
+            commentService.delete(user2.getId(), post.getId(), comment.getId());
+        }).isInstanceOf(IllegalArgumentException.class);
+    }
 }
