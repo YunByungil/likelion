@@ -7,10 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
@@ -28,5 +25,14 @@ public class CommentApiController {
         Long userId = Long.parseLong(principal.getName());
         commentService.save(userId, postId, dto);
         return ResponseEntity.ok().body(dto);
+    }
+
+    @DeleteMapping("/api/v1/post/{postId}/comment/{commentId}")
+    public ResponseEntity delete(@PathVariable Long postId,
+                                 @PathVariable Long commentId,
+                                 Principal principal) {
+        Long userId = Long.parseLong(principal.getName());
+        commentService.delete(userId, postId, commentId);
+        return ResponseEntity.ok().body("댓글 삭제 완료");
     }
 }
