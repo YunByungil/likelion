@@ -12,10 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CommentSaveRequestDto {
 
-    private User user;
-    private Post post;
     private String content;
-    private Comment comment;
 
     @Builder
     public CommentSaveRequestDto(String content) {
@@ -27,7 +24,6 @@ public class CommentSaveRequestDto {
                 .user(user)
                 .post(post)
                 .content(content)
-                .parent(comment)
                 .build();
     }
 }

@@ -37,7 +37,7 @@ public class Comment extends BaseTimeEntity {
         this.user = user;
         this.post = post;
         this.content = content;
-//        this.parent = parent;
+        this.parent = parent;
     }
 
 }
