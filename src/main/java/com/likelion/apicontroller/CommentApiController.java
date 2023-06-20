@@ -1,6 +1,7 @@
 package com.likelion.apicontroller;
 
 import com.likelion.dto.comment.CommentSaveRequestDto;
+import com.likelion.dto.comment.CommentUpdateRequestDto;
 import com.likelion.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,5 +35,15 @@ public class CommentApiController {
         Long userId = Long.parseLong(principal.getName());
         commentService.delete(userId, postId, commentId);
         return ResponseEntity.ok().body("댓글 삭제 완료");
+    }
+
+    @PutMapping("/api/v1/post/{postId}/comment/{commentId}")
+    public ResponseEntity update(@PathVariable Long postId,
+                                 @PathVariable Long commentId,
+                                 @RequestBody CommentUpdateRequestDto dto,
+                                 Principal principal) {
+        Long userId = Long.parseLong(principal.getName());
+        commentService.update(userId, postId, commentId, dto);
+        return ResponseEntity.ok().body("댓글 수정 완료");
     }
 }

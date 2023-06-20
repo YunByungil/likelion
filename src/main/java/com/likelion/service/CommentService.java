@@ -7,6 +7,7 @@ import com.likelion.domain.repository.CommentRepository;
 import com.likelion.domain.repository.PostRepository;
 import com.likelion.domain.repository.UserRepository;
 import com.likelion.dto.comment.CommentSaveRequestDto;
+import com.likelion.dto.comment.CommentUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +33,7 @@ public class CommentService {
         commentRepository.save(comment);
     }
 
+    @Transactional
     public void delete(Long userId, Long postId, Long commentId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
@@ -44,6 +46,21 @@ public class CommentService {
 
         authorizeCommentAuthor(comment, user);
         commentRepository.delete(comment);
+    }
+
+    @Transactional
+    public void update(Long userId, Long postId, Long commentId, CommentUpdateRequestDto dto) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다."));
+
+        authorizeCommentAuthor(comment, user);
+        comment.update(dto.getContent());
     }
 
     private static void authorizeCommentAuthor(Comment comment, User user) {
