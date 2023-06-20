@@ -84,3 +84,40 @@ include::{snippets}/post-update/request-fields.adoc[]
 
 include::{snippets}/post-update/http-response.adoc[]
 
+[[resources-comment]]
+
+=== Comment 생성
+
+==== HTTP request
+
+include::{snippets}/comment/http-request.adoc[]
+
+==== Request Field
+
+include::{snippets}/comment/request-fields.adoc[]
+
+[[resources-comment-delete]]
+
+=== Comment 삭제
+
+==== HTTP request
+
+include::{snippets}/comment-delete/http-request.adoc[]
+
+==== Request param
+
+include::{snippets}/comment-delete/path-parameters.adoc[]
+
+=== Comment 수정
+
+==== HTTP request
+
+include::{snippets}/comment-update/http-request.adoc[]
+
+==== Request Field
+
+include::{snippets}/comment-update/request-fields.adoc[]
+
+==== Request param
+
+include::{snippets}/comment-update/path-parameters.adoc[]
