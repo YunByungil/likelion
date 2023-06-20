@@ -8,6 +8,7 @@ import com.likelion.domain.repository.CommentRepository;
 import com.likelion.domain.repository.PostRepository;
 import com.likelion.domain.repository.UserRepository;
 import com.likelion.dto.comment.CommentSaveRequestDto;
+import com.likelion.dto.comment.CommentUpdateRequestDto;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -133,5 +134,57 @@ class CommentServiceTest {
         assertThatThrownBy(() -> {
             commentService.delete(user2.getId(), post.getId(), comment.getId());
         }).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("내가 작성한 댓글이 아닐 때 수정하면 예외 발생")
+    @Test
+    void 내가_작성한_댓글이_아니면_예외() {
+        // given
+        User user2 = userRepository.save(User.builder()
+                .nickname("닉네임")
+                .username("작성자")
+                .role(UserRole.USER)
+                .email("test@naver.com")
+                .password("gd")
+                .build());
+
+        CommentSaveRequestDto dto = CommentSaveRequestDto.builder()
+                .content("댓글 내용")
+                .build();
+
+        CommentUpdateRequestDto updateDto = CommentUpdateRequestDto.builder()
+                .content("수정 내용")
+                .build();
+
+        Comment comment = commentRepository.save(dto.toEntity(user, post));
+
+        // then
+        assertThatThrownBy(() -> {
+            commentService.update(user2.getId(), post.getId(), comment.getId(), updateDto);
+        }).isInstanceOf(IllegalArgumentException.class);
+
+    }
+
+    @DisplayName("댓글 수정 기능 테스트 (검증 포함)")
+    @Test
+    void update() {
+        // given
+        CommentSaveRequestDto dto = CommentSaveRequestDto.builder()
+                .content("댓글 내용")
+                .build();
+
+        CommentUpdateRequestDto updateDto = CommentUpdateRequestDto.builder()
+                .content("수정 내용")
+                .build();
+
+        Comment comment = commentRepository.save(dto.toEntity(user, post));
+
+        // when
+        commentService.update(user.getId(), post.getId(), comment.getId(), updateDto);
+
+        List<Comment> all = commentRepository.findAll();
+
+        // then
+        assertThat(all.get(0).getContent()).isEqualTo(updateDto.getContent());
     }
 }
